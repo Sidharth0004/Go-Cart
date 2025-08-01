@@ -4,10 +4,13 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './configs/db.js';
 import userRouter from './routes/userRoute.js';
+import sellerRouter from './routes/sellerRoute.js';
+import ConnectCloudinary from './configs/cloudinary.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
  await connectDB(); // Connect to the database
+ await ConnectCloudinary(); // Connect to Cloudinary
 
 
 // Allow multiple origin
@@ -29,6 +32,7 @@ app.get('/', (req, res) => {
   res.send('API is running');
 });
 app.use('/api/user', userRouter); // Use the user router for user-related routes
+app.use('/api/seller', sellerRouter); // Use the seller router for seller-related routes
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
