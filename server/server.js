@@ -76,10 +76,9 @@ await ConnectCloudinary();
 // ✅ CORS setup FIRST before any middleware
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://go-cart-nine.vercel.app',
-  'https://go-cart-mu.vercel.app' // ✅ Add your new frontend
+ 
+  'https://go-cart-lac.vercel.app'  // ✅ NEW frontend domain added
 ];
-
 
 app.use(cors({
   origin: allowedOrigins,
