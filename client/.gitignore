@@ -28,5 +28,3 @@ node_modules/
 # Ignore environment files
 .env
 
-# Ignore assets folder
-src/assets/
