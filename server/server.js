@@ -22,6 +22,7 @@ const PORT = process.env.PORT || 4000;
 // Allow multiple origin
 const allowedOrigins = [
   'http://localhost:5173', // Adjust this to your frontend URL
+  'https://go-cart-frontend.vercel.app'
   ]
 
 app.post('/stripe',express.raw({type: 'application/json'}),stripeWebhooks)
