@@ -17,6 +17,7 @@ import SellerLayout from './pages/seller/SellerLayout'
 import AddProduct from './pages/seller/AddProduct'
 import ProductList from './pages/seller/ProductList'
 import Order from './pages/seller/Order'
+import Loading from './components/Loading'
 
 const App = () => {
   const {showUserLogin , isSeller} = useContext(AppContext);
@@ -43,7 +44,12 @@ const App = () => {
   <Route path='/cart' element={<Cart/>} />
   <Route path='/add-address' element={<AddAddress />} />
   <Route path='/my-orders' element={<MyOrder />} />
+  <Route path='/loader' element={<Loading />} />
+
+
+
   <Route path='/seller' element={isSeller? <SellerLayout/> :<SellerLoging />} >
+  
     <Route  index element={isSeller ? <AddProduct/> : null}/>
   <Route  path='product-list' element={<ProductList/>}/>
   <Route  path='orders' element={<Order/>}/>

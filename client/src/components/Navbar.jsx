@@ -3,17 +3,30 @@ import { NavLink } from 'react-router-dom'
 import { assets } from "../assets/assets"; // Assuming you have an assets file for images
 
 import { AppContext } from "../context/AppContext";
+import toast from 'react-hot-toast';
 
 
 const Navbar = () => {
 
-      const { user, setUser , setShowUserLogin  , navigate ,searchQuery, setSearchQuery ,getCartCount} = useContext(AppContext);
+      const { user, setUser , setShowUserLogin  , navigate,axios ,searchQuery, setSearchQuery ,getCartCount} = useContext(AppContext);
     const [open, setOpen] = React.useState(false);
 
 
   const logout = async () => {
-    setUser(null);
-    navigate('/');
+    try {
+        const { data } = await axios.get("/api/user/logout");
+        if (data.success) {
+            toast.success("Logout successful");
+              setUser(null);
+              navigate('/');
+        } else {
+            toast.error(data.message || "Logout failed");
+        }
+        
+    } catch (error) {
+        toast.error(error.message || "Logout failed");
+    }
+  
   }
   useEffect(() => {
  if (searchQuery.length > 0) {

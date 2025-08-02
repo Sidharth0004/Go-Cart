@@ -1,3 +1,5 @@
+// import User from "../models/userModel.js";
+import User from "../models/User.js";
 
 
 
@@ -7,9 +9,10 @@ export const updateCart = async (req, res) => {
     try {
         const {  cartItems } = req.body;
         const userId = req.userId; // Assuming userId is set by authUser middleware
+        console.log("Updating cart for user:", userId, "with items:", cartItems);
 
         // Validate input
-        if (!userId || !Array.isArray(cartItems)) {
+        if (!userId ) {
             return res.status(400).json({ success: false, message: "Invalid input data" });
         }
 

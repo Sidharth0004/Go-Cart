@@ -1,5 +1,10 @@
 import React from 'react'
 import { assets } from '../assets/assets'
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
+
+import { useEffect } from 'react';
 
 const InputField = ({type , placeholder , name , handleChange ,address})=>(
     <input  className='w-full px-2 py-2.5 border border-gray-500/30 rounded outline-none 
@@ -15,6 +20,7 @@ const InputField = ({type , placeholder , name , handleChange ,address})=>(
 )
 
 const AddAddress = () => {
+      const {  axios , navigate ,user} = useContext(AppContext);
 
     const[address , setAddress] = React.useState({ 
         firstName:'',
@@ -35,9 +41,31 @@ const AddAddress = () => {
 
         }))
     }
+
      const onSubmitHandler = async (e) => {
+  try {
   e.preventDefault();
+  const { data } = await axios.post("/api/address/add", {address});
+  if (data.success) {
+    toast.success("Address added successfully");
+    navigate('/cart'); // Redirect to cart after successful address addition
+    
+  }else{
+    toast.error(data.message || "Failed to add address");
+  }
+    
+  } catch (error) {
+  console.error("Add address error:", error);
+//   toast.error(error.response?.data?.message || "Failed to add address");
+}
      }
+
+     useEffect(()=>{
+        if(!user){
+            toast.error("Please login to add address");
+            navigate("/cart");
+        }
+     }, [])
   return (
     <div className='mt-16 pb-16'>
         <p className='text-2xl md:text-3xl text-gray-500'>Add Shipping

@@ -37,15 +37,43 @@ export const sellerLogin = async (req, res) => {
 
 
 // Check Seller Authentication : /api/seller/is-auth
+
 export const isSellerAuth = async (req, res) => {
     try {
-         return res.status(200).json({ success: true, user });
+         return res.status(200).json({ success: true });
 
     } catch (error) {
         console.error("Error checking authentication:", error.message);
         return res.status(500).json({ success: false, message: error.message });
     }
 }
+
+
+// export const isSellerAuth = async (req, res) => {
+//   try {
+//     const { sellerToken } = req.cookies;
+//     if (!sellerToken) {
+//       return res.status(401).json({ success: false, message: "Unauthorized" });
+//     }
+
+//     const decoded = jwt.verify(sellerToken, process.env.JWT_SECRET);
+
+//     if (decoded.email === process.env.SELLER_EMAIL) {
+//       return res.status(200).json({ success: true });
+//     } else {
+//       return res.status(401).json({ success: false, message: "Invalid seller" });
+//     }
+
+//   } catch (error) {
+//     console.error("Error checking authentication:", error.message);
+//     return res.status(500).json({ success: false, message: "Invalid token" });
+//   }
+// };
+
+
+
+
+
 
 // Logout seller
 export const sellerLogout = (req, res) => {   

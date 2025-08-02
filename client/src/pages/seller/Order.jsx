@@ -3,17 +3,26 @@ import { AppContext } from '../../context/AppContext';
 import { assets, dummyOrders } from '../../assets/assets';
 
 const Order = () => {
-   const {currency} = useContext(AppContext);
+   const {currency , axios} = useContext(AppContext);
    const [orders , setOrders] = React.useState([]);
 
  const fetchOrders = async () => {
-          setOrders(dummyOrders)
+          try {
+            const { data } = await axios.get("/api/order/seller");
+            if (data.success) {
+              setOrders(data.orders);
+            } else {
+              console.error("Failed to fetch orders:", data.message);
+            }
+          } catch (error) {
+            console.error("Error fetching orders:", error);
+          }
        };
     
    React.useEffect(() => {
-       
        fetchOrders();
    }, []);
+   
 
   return (
     <div className='no-scrollbar flex-1 h-[95vh] overflow-y-scroll '>

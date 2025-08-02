@@ -10,6 +10,7 @@ import productRouter from './routes/productRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import addressRouter from './routes/addressRoute.js';
 import orderRouter from './routes/orderRoute.js';
+import { stripeWebhooks } from './controllers/orderController.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -17,10 +18,13 @@ const PORT = process.env.PORT || 4000;
  await ConnectCloudinary(); // Connect to Cloudinary
 
 
+
 // Allow multiple origin
 const allowedOrigins = [
   'http://localhost:5173', // Adjust this to your frontend URL
   ]
+
+app.post('/stripe',express.raw({type: 'application/json'}),stripeWebhooks)
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -40,7 +44,8 @@ app.use('/api/seller', sellerRouter); // Use the seller router for seller-relate
 app.use('/api/product', productRouter); // Use the product router for product-related routes
 app.use('/api/cart', cartRouter); // Use the cart router for cart-related routes
 app.use('/api/address', addressRouter); // Use the address router for address-related routes
-app.use('/api/order', orderRouter)
+app.use('/api/order', orderRouter);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

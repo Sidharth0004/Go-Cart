@@ -2,14 +2,27 @@ import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import { assets } from "../../assets/assets";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const SellerLayout = () => {
-    const { setIsSeller } = useContext(AppContext);
+    const {  axios , navigate} = useContext(AppContext);
 
 
 
    const logout = async () => {
-setIsSeller(false)
+   try {
+    const {data} = await axios.get("/api/seller/logout");
+    if (data.success) {
+        toast.success("Logout successful");
+        // setIsSeller(false);
+        navigate("/");
+    }else{
+        toast.error(data.message || "Logout failed. Please try again.");
+    }
+   } catch (error) {
+    toast.error("Logout failed. Please try again.");
+       console.error("Error logging out:", error);
+   }
    }
 
     const sidebarLinks = [

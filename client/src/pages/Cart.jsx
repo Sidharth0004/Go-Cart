@@ -1,19 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import { assets, dummyAddress } from "../assets/assets";
+import toast from "react-hot-toast";
+
 
 const Cart = () => {
     const {products , currency ,cartItems , removeCartItem , getCartCount,
-         updateCartItem , navigate ,getCartAmount } = useContext(AppContext); 
+         updateCartItem , navigate ,getCartAmount,axios,user,setCartItems } = useContext(AppContext); 
 
 const [cartArray, setCartArray] = useState([]);
-const[addresses , setAddresses] = useState([dummyAddress]);
+const[addresses , setAddresses] = useState([]);
     const [showAddress, setShowAddress] = useState(false);
-    const[selectedAddress, setSelectedAddress] = useState(dummyAddress[0]);
+    const[selectedAddress, setSelectedAddress] = useState(null);
     const[paymentOption, setPaymentOption] = useState("COD");
 
     const getCart =()=>{
-        let tempArray = [];
+        let tempArray = [];  
         for(const key in cartItems){
             const product = products.find((item) => item._id === key);
             // if(product){
@@ -24,14 +26,84 @@ const[addresses , setAddresses] = useState([dummyAddress]);
         }
         setCartArray(tempArray);
     }
-    
+    const getUserAddresses = async () => {
+        try {
+            const{data} = await axios.get("/api/address/get");
+            if(data.success){
+                setAddresses(data.addresses);
+                if(data.addresses.length > 0){
+                    setSelectedAddress(data.addresses[0]); // Set the first address as default
+                } 
+        }else{
+            toast.error(data.message || "Failed to fetch addresses"); 
+        } 
+    }catch (error) {
+            console.error("Error fetching user addresses:", error); 
+        }
+    }
+
   useEffect(() => {
     if(products.length > 0 && cartItems)
     getCart();
   }, [cartItems, products]);   
+
   const placeOrder = async () => {
+    try {
+        if(!selectedAddress){
+            toast.error("Please select a delivery address");
+            return;
+        }
+        // Place order with Cod
+        if (paymentOption === "COD") {
+             const {data} = await axios.post("/api/order/cod", {
+                userId: user._id,
+                items: cartArray.map(item => ({ product: item._id, quantity: item.quantity })),
+                address: selectedAddress
+             })
+            if (data.success) {
+                toast.success("Order placed successfully");
+                setCartItems({}); // Clear cart after placing order
+
+                navigate('/my-orders'); // Redirect to orders page after successful order placement
+            } else {
+                toast.error(data.message || "Failed to place order");
+            }
+            
+        }
+        else{
+            // Place order with stripe
+
+       const {data} = await axios.post("/api/order/stripe", {
+                userId: user._id,
+                items: cartArray.map(item => ({ product: item._id, quantity: item.quantity })),
+                address: selectedAddress
+             })
+            if (data.success) {
+               window.location.replace(data.url)
+            } else {
+                toast.error(data.message || "Failed to place order");
+            }
+            
+
+
+
+
+
+        }
+    } catch (error) {
+        console.error("Error placing order:", error);
+        toast.error("Failed to place order");
+        
+    }
 
   } 
+
+  useEffect(() => {
+    if (user) {
+        getUserAddresses();
+        
+    }
+  },[user])
 
     return products.length > 0 && cartItems ? (
         <div className="flex flex-col md:flex-row mt-16">

@@ -33,7 +33,7 @@ export const addProduct = async (req, res) => {
 export const productList = async (req, res) => {
     try {
         const products = await Product.find({});
-        res.status(200).json({ success: true, data: products });
+        res.status(200).json({ success: true,  products });
     } catch (error) {
         console.error("Error fetching products:", error.message);
         return res.status(500).json({ success: false, message: "Server error" });
